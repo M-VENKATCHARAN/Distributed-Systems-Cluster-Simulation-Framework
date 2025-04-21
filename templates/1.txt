@@ -1,0 +1,63 @@
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Node Manager</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <style>
+        body { font-family: Arial, sans-serif; }
+        .container { width: 50%; margin: auto; text-align: center; }
+        .node { padding: 10px; border: 1px solid #ddd; margin: 10px; }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>Node Manager</h1>
+
+        <!-- ✅ Button to Add Node -->
+        <button onclick="addNode()">Add Node</button>
+
+        <!-- ✅ List Nodes -->
+        <h2>Nodes</h2>
+        <div id="node-list">
+            {% for node_id, data in nodes.items() %}
+                <div class="node">
+                    <p><b>Node ID:</b> {{ node_id }}</p>
+                    <p><b>Status:</b> {{ data['status'] }}</p>
+                    <button onclick="removeNode('{{ node_id }}')">Remove</button>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <script>
+        function addNode() {
+            fetch('/add_node', { method: 'POST' })
+            .then(response => response.json())
+            .then(data => {
+                alert(data.message);
+                location.reload();
+            });
+        }
+
+        function removeNode(nodeId) {
+            fetch('/remove_node', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ node_id: nodeId })
+            })
+            .then(response => response.json())
+            .then(data => {
+                alert(data.message);
+                location.reload();
+            });
+        }
+    </script>
+
+</body>
+</html>
+
